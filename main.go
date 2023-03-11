@@ -1,7 +1,9 @@
+// package main is the main package
 package main
 
 import "fmt"
 
 func main() {
-	fmt.Println("main called")
+	outPut := "main called"
+	fmt.Println(outPut)
 }
