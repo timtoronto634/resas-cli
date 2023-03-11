@@ -49,7 +49,8 @@ RESAS(地域経済分析システム) APIの「人口構成」から取得する
 ## api
 access the RESAS api
 ## usecase
-
+handle business logic such as changing data
 ## cli
+command line interface
 
 
