@@ -1,4 +1,4 @@
-.PHONY: lint tools.get
+.PHONY: lint tools.get vet
 GOBIN = $(shell go env GOPATH)/bin
 
 tools.get:
