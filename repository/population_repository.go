@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"io"
@@ -32,8 +33,8 @@ type PopulationValue struct {
 	Value int `json:"value"`
 }
 
-func (repo *RESARepository) GetPopulation(cityCode, prefCode string, yearFrom, yearTo int) (*PopulationResponse, error) {
-	req, err := http.NewRequest("GET", repo.apiEndpoint+apiPopulationPath, nil)
+func (repo *RESARepository) GetPopulation(ctx context.Context, cityCode, prefCode string, yearFrom, yearTo int) (*PopulationResponse, error) {
+	req, err := http.NewRequestWithContext(ctx, "GET", repo.apiEndpoint+apiPopulationPath, nil)
 	if err != nil {
 		log.Printf("failed in creating request: %v", err)
 		return nil, err
