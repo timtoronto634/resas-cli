@@ -1,11 +1,10 @@
 package cmd
 
 import (
-	"fmt"
-	"io"
-	"os"
+	"context"
 
 	"github.com/spf13/cobra"
+	"github.com/timtoronto634/resas-cli/usecase"
 )
 
 func init() {
@@ -18,9 +17,11 @@ var populationCmd = &cobra.Command{
 	Long: `Print the population of the specified argument: kind, prefecture, year.
 	default is all, Tokyo, 1980-2020`,
 	Run: func(cmd *cobra.Command, args []string) {
-		for y := 1980; y <= 2020; y++ {
-			str := fmt.Sprintf("%v,%v,%d\n", "東京都", y, 1000000)
-			io.WriteString(os.Stdout, str)
-		}
+		ctx := context.Background()
+		pref := 13
+		yearFrom := 1980
+		yearTo := 2020
+
+		usecase.PrintPopulation(ctx, pref, yearFrom, yearTo)
 	},
 }
