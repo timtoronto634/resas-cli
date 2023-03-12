@@ -50,7 +50,7 @@ RESAS(地域経済分析システム) APIの「人口構成」から取得する
 access the RESAS api
 ## usecase
 handle business logic such as changing data
-## cli
-command line interface
+## cmd
+command line interface (use cobra)
 
 
