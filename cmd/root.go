@@ -1,3 +1,4 @@
+// Package cmd specify what command and arguments are used
 /*
 Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 */
