@@ -1,3 +1,4 @@
+// Package repository provides data access
 package repository
 
 import (
@@ -7,33 +8,14 @@ import (
 	"io"
 	"log"
 	"net/http"
+
+	"github.com/timtoronto634/resas-cli/entity"
 )
 
 const apiPopulationPath = "/api/v1/population/composition/perYear"
 
-type PopulationResponse struct {
-	Message     string          `json:"message"`
-	Result      *PopulationData `json:"result"`
-	StatusCode  int             `json:"statusCode"`
-	Description string          `json:"description"`
-}
-
-type PopulationData struct {
-	BoundaryYear int               `json:"boundaryYear"`
-	Data         []*PopulationKind `json:"data"`
-}
-
-type PopulationKind struct {
-	Label string             `json:"label"`
-	Data  []*PopulationValue `json:"data"`
-}
-
-type PopulationValue struct {
-	Year  int `json:"year"`
-	Value int `json:"value"`
-}
-
-func (repo *RESARepository) GetPopulation(ctx context.Context, cityCode, prefCode string, yearFrom, yearTo int) (*PopulationResponse, error) {
+// GetPopulation get population data from RESAS api
+func (repo *RESASRepository) GetPopulation(ctx context.Context, cityCode, prefCode string) ([]*entity.PopulationGroup, error) {
 	req, err := http.NewRequestWithContext(ctx, "GET", repo.apiEndpoint+apiPopulationPath, nil)
 	if err != nil {
 		log.Printf("failed in creating request: %v", err)
@@ -68,12 +50,12 @@ func (repo *RESARepository) GetPopulation(ctx context.Context, cityCode, prefCod
 		return nil, errors.New("server error occurred")
 	}
 
-	var popResp PopulationResponse
+	var popResp entity.PopulationResponse
 	err = json.Unmarshal(body, &popResp)
 	if err != nil {
 		log.Printf("failed in decoding response: %v", err)
 		return nil, err
 	}
 
-	return &popResp, nil
+	return popResp.Result.Data, nil
 }

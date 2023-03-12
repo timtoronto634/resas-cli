@@ -9,17 +9,19 @@ import (
 	"net/http"
 )
 
-type PrefectureMaps struct {
-	Message string        `json:"message"`
-	Result  []Prefectures `json:"result"`
+type prefecturesResponse struct {
+	Message string         `json:"message"`
+	Result  []*Prefectures `json:"result"`
 }
 
+// Prefectures is a data type of a single prefecture info
 type Prefectures struct {
 	PrefCode int    `json:"prefCode"`
 	PrefName string `json:"prefName"`
 }
 
-func (repo *RESARepository) GetPrefectures(ctx context.Context) (*PrefectureMaps, error) {
+// GetPrefectures get prefecture list with code and names from RESAS api
+func (repo *RESASRepository) GetPrefectures(ctx context.Context) ([]*Prefectures, error) {
 	req, err := http.NewRequestWithContext(ctx, "GET", repo.apiEndpoint+apiPrefecturesPath, nil)
 	if err != nil {
 		log.Printf("failed in creating request: %v", err)
@@ -43,12 +45,12 @@ func (repo *RESARepository) GetPrefectures(ctx context.Context) (*PrefectureMaps
 		return nil, errors.New("server error occurred")
 	}
 
-	var prefResp PrefectureMaps
+	var prefResp prefecturesResponse
 	err = json.Unmarshal(body, &prefResp)
 	if err != nil {
 		log.Printf("failed in decoding response: %v", err)
 		return nil, err
 	}
 
-	return &prefResp, nil
+	return prefResp.Result, nil
 }

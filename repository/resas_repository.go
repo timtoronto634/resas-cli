@@ -8,19 +8,21 @@ import (
 
 const apiPrefecturesPath = "/api/v1/prefectures"
 
-type RESARepository struct {
+// RESASRepository is a repository for RESAS api
+type RESASRepository struct {
 	client      *http.Client
 	apiEndpoint string
 	apiKey      string
 }
 
-func NewRESASRepository() (*RESARepository, error) {
+// NewRESASRepository returns RESASRepository after initilizing configuration
+func NewRESASRepository() (*RESASRepository, error) {
 	client := http.Client{}
 	cfg, err := config.NewRESASConfig()
 	if err != nil {
 		return nil, err
 	}
-	repo := RESARepository{
+	repo := RESASRepository{
 		client:      &client,
 		apiEndpoint: cfg.Endpoint,
 		apiKey:      cfg.Key,

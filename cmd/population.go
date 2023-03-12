@@ -21,7 +21,8 @@ var populationCmd = &cobra.Command{
 		pref := "13"
 		yearFrom := 1980
 		yearTo := 2020
+		label := "総人口"
 
-		usecase.PrintPopulation(ctx, pref, yearFrom, yearTo)
+		usecase.PrintPopulation(ctx, label, pref, yearFrom, yearTo)
 	},
 }

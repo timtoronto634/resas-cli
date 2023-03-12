@@ -1,3 +1,4 @@
+// Package config configures variables used within product
 package config
 
 import (
@@ -5,11 +6,13 @@ import (
 	"os"
 )
 
+// RESASConfig is a config for RESAS api
 type RESASConfig struct {
 	Endpoint string
 	Key      string
 }
 
+// NewRESASConfig returns resasConfig
 func NewRESASConfig() (*RESASConfig, error) {
 	apiEndpoint := os.Getenv("RESAS_API_ENDPOINT")
 	if apiEndpoint == "" {
