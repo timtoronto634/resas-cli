@@ -1,9 +1,8 @@
 // package main is the main package
 package main
 
-import "fmt"
+import "github.com/timtoronto634/resas-cli/cmd"
 
 func main() {
-	outPut := "main called"
-	fmt.Println(outPut)
+	cmd.Execute()
 }
