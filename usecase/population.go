@@ -19,7 +19,7 @@ type writable interface {
 }
 
 // PrintPopulation prints population for specified kind, city, year
-func PrintPopulation(ctx context.Context, output writable, label string, prefCode string, yearFrom, yearTo int) {
+func PrintPopulation(ctx context.Context, output writable, label string, prefCode []string, yearFrom, yearTo int) {
 
 	repo, err := repository.NewRESASRepository()
 	if err != nil {
@@ -33,12 +33,12 @@ func PrintPopulation(ctx context.Context, output writable, label string, prefCod
 	}
 	var targetPref string
 	for _, pref := range prefResp {
-		if strconv.Itoa(pref.PrefCode) == prefCode {
+		if strconv.Itoa(pref.PrefCode) == prefCode[0] {
 			targetPref = pref.PrefName
 		}
 	}
 
-	popData, err := repo.GetPopulation(ctx, cityCode, prefCode)
+	popData, err := repo.GetPopulation(ctx, cityCode, prefCode[0])
 	if err != nil {
 		log.Printf("failed in getting population: %v", err)
 		return

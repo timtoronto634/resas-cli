@@ -68,7 +68,7 @@ var populationCmd = &cobra.Command{
 
 		prefCodes := intSliceToString(prefNums)
 
-		usecase.PrintPopulation(ctx, os.Stdout, label, prefCodes[0], yearFrom, yearTo)
+		usecase.PrintPopulation(ctx, os.Stdout, label, prefCodes, yearFrom, yearTo)
 	},
 }
 
