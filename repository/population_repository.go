@@ -26,7 +26,6 @@ func (repo *RESASRepository) GetPopulation(ctx context.Context, cityCode, prefCo
 	values.Add("cityCode", cityCode)
 	values.Add("prefCode", prefCode)
 	req.URL.RawQuery = values.Encode()
-	log.Printf("requesting %v\n", req.URL)
 
 	req.Header.Add("X-API-KEY", repo.apiKey)
 	resp, err := repo.client.Do(req)

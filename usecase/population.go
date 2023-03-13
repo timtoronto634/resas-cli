@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"os"
 	"strconv"
 
 	"github.com/timtoronto634/resas-cli/entity"
@@ -15,8 +14,12 @@ import (
 
 var cityCode = "-"
 
+type writable interface {
+	io.Writer
+}
+
 // PrintPopulation prints population for specified kind, city, year
-func PrintPopulation(ctx context.Context, label string, prefCode string, yearFrom, yearTo int) {
+func PrintPopulation(ctx context.Context, output writable, label string, prefCode string, yearFrom, yearTo int) {
 
 	repo, err := repository.NewRESASRepository()
 	if err != nil {
@@ -52,7 +55,7 @@ func PrintPopulation(ctx context.Context, label string, prefCode string, yearFro
 	}
 
 	for _, p := range populations {
-		io.WriteString(os.Stdout, fmt.Sprintf("%v,%v,%v\n", targetPref, p.Year, p.Value))
+		io.WriteString(output, fmt.Sprintf("%v,%v,%v\n", targetPref, p.Year, p.Value))
 	}
 }
 

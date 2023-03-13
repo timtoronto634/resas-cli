@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 	"strconv"
 
 	"github.com/spf13/cobra"
@@ -67,7 +68,7 @@ var populationCmd = &cobra.Command{
 
 		prefCodes := intSliceToString(prefNums)
 
-		usecase.PrintPopulation(ctx, label, prefCodes[0], yearFrom, yearTo)
+		usecase.PrintPopulation(ctx, os.Stdout, label, prefCodes[0], yearFrom, yearTo)
 	},
 }
 
