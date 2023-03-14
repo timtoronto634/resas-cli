@@ -20,7 +20,7 @@ type writable interface {
 	io.Writer
 }
 
-// PrintPopulation prints population for specified kind, city, year
+// PrintPopulations prints population for specified kind, city, year
 func PrintPopulations(ctx context.Context, output writable, label string, prefCodes []int, yearFrom, yearTo int) {
 	sort.Ints(prefCodes)
 
