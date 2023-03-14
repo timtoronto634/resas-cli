@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strconv"
 
 	"github.com/spf13/cobra"
 	"github.com/timtoronto634/resas-cli/usecase"
@@ -27,7 +26,7 @@ var populationCmd = &cobra.Command{
 		ctx := context.Background()
 
 		// get flag values
-		prefNums, err := cmd.Flags().GetIntSlice("prefectures")
+		prefCodes, err := cmd.Flags().GetIntSlice("prefectures")
 		if err != nil {
 			log.Fatalf("failed to get prefecture from argument: %v", err)
 			return
@@ -56,7 +55,7 @@ var populationCmd = &cobra.Command{
 		}
 		label := codeToLabel[labelFlag]
 
-		if !isValidPrefecture(prefNums) {
+		if !isValidPrefecture(prefCodes) {
 			fmt.Println("Invalid prefecture code(s) provided.")
 			return
 		}
@@ -66,9 +65,7 @@ var populationCmd = &cobra.Command{
 			return
 		}
 
-		prefCodes := intSliceToString(prefNums)
-
-		usecase.PrintPopulation(ctx, os.Stdout, label, prefCodes, yearFrom, yearTo)
+		usecase.PrintPopulations(ctx, os.Stdout, label, prefCodes, yearFrom, yearTo)
 	},
 }
 
@@ -78,14 +75,6 @@ func init() {
 	populationCmd.Flags().IntP("from", "f", 1980, "Year from")
 	populationCmd.Flags().IntP("to", "t", 2020, "Year to")
 	rootCmd.AddCommand(populationCmd)
-}
-
-func intSliceToString(prefNums []int) []string {
-	strSlice := make([]string, len(prefNums))
-	for i, num := range prefNums {
-		strSlice[i] = strconv.Itoa(num)
-	}
-	return strSlice
 }
 
 func isValidPrefecture(providedPrefs []int) bool {
