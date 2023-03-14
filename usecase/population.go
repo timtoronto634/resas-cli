@@ -8,6 +8,7 @@ import (
 	"log"
 	"sort"
 	"strconv"
+	"time"
 
 	"github.com/timtoronto634/resas-cli/entity"
 	"github.com/timtoronto634/resas-cli/repository"
@@ -36,7 +37,10 @@ func PrintPopulations(ctx context.Context, output writable, label string, prefCo
 
 	codeToName := buildPrefMaps(prefectures)
 
-	for _, prefCode := range prefCodes {
+	for idx, prefCode := range prefCodes {
+		if idx > 4 && ((idx % 5) == 0) {
+			time.Sleep(time.Second)
+		}
 		popData, err := repo.GetPopulation(ctx, cityCode, strconv.Itoa(prefCode))
 		if err != nil {
 			log.Printf("failed in getting population: %v", err)
