@@ -8,6 +8,7 @@ import (
 	"log"
 	"sort"
 	"strconv"
+	"sync"
 	"time"
 
 	"github.com/timtoronto634/resas-cli/entity"
@@ -37,29 +38,47 @@ func PrintPopulations(ctx context.Context, output writable, label string, prefCo
 
 	codeToName := buildPrefMaps(prefectures)
 
+	wg := sync.WaitGroup{}
+	resultCh := make(chan string)
+
 	for idx, prefCode := range prefCodes {
 		if idx > 4 && ((idx % 5) == 0) {
 			time.Sleep(time.Second)
 		}
-		popData, err := repo.GetPopulation(ctx, cityCode, strconv.Itoa(prefCode))
-		if err != nil {
-			log.Printf("failed in getting population: %v", err)
-			return
-		}
-		targetLabelData := takeByLabel(popData, label)
-		if targetLabelData == nil {
-			log.Printf("could not find label with: %v", label)
-			return
-		}
-		populations := filterSortWithYear(targetLabelData.Data, yearFrom, yearTo)
-		if len(populations) == 0 {
-			log.Printf("could not find data within year range of: %v~%v", yearFrom, yearTo)
-			return
-		}
+		wg.Add(1)
+		go func(pcode int) {
+			defer wg.Done()
 
-		for _, p := range populations {
-			io.WriteString(output, fmt.Sprintf("%v,%v,%v\n", codeToName[prefCode], p.Year, p.Value))
-		}
+			popData, err := repo.GetPopulation(ctx, cityCode, strconv.Itoa(pcode))
+			if err != nil {
+				log.Printf("failed in getting population: %v", err)
+				return
+			}
+			targetLabelData := takeByLabel(popData, label)
+			if targetLabelData == nil {
+				log.Printf("could not find label with: %v", label)
+				return
+			}
+			populations := filterSortWithYear(targetLabelData.Data, yearFrom, yearTo)
+			if len(populations) == 0 {
+				log.Printf("could not find data within year range of: %v~%v", yearFrom, yearTo)
+				return
+			}
+			dataPerPref := ""
+			for _, population := range populations {
+				dataPerPref += fmt.Sprintf("%v,%v,%v\n", codeToName[pcode], population.Year, population.Value)
+			}
+			resultCh <- dataPerPref
+		}(prefCode)
+	}
+
+	go func() {
+		wg.Wait()
+		close(resultCh)
+	}()
+
+	for population := range resultCh {
+		io.WriteString(output, population)
 	}
 }
 
