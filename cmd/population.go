@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"os"
 
@@ -25,43 +24,41 @@ var populationCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx := context.Background()
 
-		// get flag values
 		prefCodes, err := cmd.Flags().GetIntSlice("prefectures")
 		if err != nil {
-			log.Fatalf("failed to get prefecture from argument: %v", err)
+			log.Printf("[error] failed to get prefecture from argument: %v", err)
 			return
 		}
 		labelFlag, err := cmd.Flags().GetString("label")
 		if err != nil {
-			log.Fatalf("failed to get label from argument: %v", err)
+			log.Printf("[error] failed to get label from argument: %v", err)
 			return
 		}
 		yearFrom, err := cmd.Flags().GetInt("from")
 		if err != nil {
-			log.Fatalf("failed to get yearFrom from argument: %v", err)
+			log.Printf("[error] failed to get yearFrom from argument: %v", err)
 			return
 		}
 		yearTo, err := cmd.Flags().GetInt("to")
 		if err != nil {
-			log.Fatalf("failed to get yearTo from argument: %v", err)
+			log.Printf("[error] failed to get yearTo from argument: %v", err)
 			return
 		}
 
-		// validate flag values
 		validLabels := []string{"all", "youth", "productive", "elderly"}
 		if !isValidLabel(labelFlag, validLabels) {
-			fmt.Println("Invalid label provided. Allowed values ", validLabels)
+			log.Printf("[error] Invalid label provided. Allowed values %v", validLabels)
 			return
 		}
 		label := codeToLabel[labelFlag]
 
 		if !isValidPrefecture(prefCodes) {
-			fmt.Println("Invalid prefecture code(s) provided.")
+			log.Print("[error] Invalid prefecture code(s) provided.")
 			return
 		}
 
 		if yearTo < yearFrom {
-			fmt.Println("Invalid year range provided")
+			log.Print("[error] Invalid year range provided")
 			return
 		}
 

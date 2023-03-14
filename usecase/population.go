@@ -8,6 +8,7 @@ import (
 	"log"
 	"sort"
 	"strconv"
+	"strings"
 	"sync"
 
 	"github.com/timtoronto634/resas-cli/entity"
@@ -43,10 +44,10 @@ func PrintPopulations(ctx context.Context, output writable, label string, prefCo
 	for _, prefCode := range prefCodes {
 		wg.Add(1)
 		// NOTE: if the average number of api call exceeds 5 per second, use another goroutine to add sleep
-		go func(pcode int) {
+		go func(prefC int) {
 			defer wg.Done()
 
-			popData, err := repo.GetPopulation(ctx, cityCode, strconv.Itoa(pcode))
+			popData, err := repo.GetPopulation(ctx, cityCode, strconv.Itoa(prefC))
 			if err != nil {
 				log.Printf("failed in getting population: %v", err)
 				return
@@ -61,11 +62,12 @@ func PrintPopulations(ctx context.Context, output writable, label string, prefCo
 				log.Printf("could not find data within year range of: %v~%v", yearFrom, yearTo)
 				return
 			}
-			dataPerPref := ""
+
+			var dataPerPref strings.Builder
 			for _, population := range populations {
-				dataPerPref += fmt.Sprintf("%v,%v,%v\n", codeToName[pcode], population.Year, population.Value)
+				fmt.Fprintf(&dataPerPref, "%v,%v,%v\n", codeToName[prefC], population.Year, population.Value)
 			}
-			resultCh <- dataPerPref
+			resultCh <- dataPerPref.String()
 		}(prefCode)
 	}
 

@@ -12,3 +12,5 @@ vet:
 
 lint: vet revive
 	
+test:
+	go test ./...
