@@ -9,7 +9,6 @@ import (
 	"sort"
 	"strconv"
 	"sync"
-	"time"
 
 	"github.com/timtoronto634/resas-cli/entity"
 	"github.com/timtoronto634/resas-cli/repository"
@@ -41,11 +40,9 @@ func PrintPopulations(ctx context.Context, output writable, label string, prefCo
 	wg := sync.WaitGroup{}
 	resultCh := make(chan string)
 
-	for idx, prefCode := range prefCodes {
-		if idx > 4 && ((idx % 5) == 0) {
-			time.Sleep(time.Second)
-		}
+	for _, prefCode := range prefCodes {
 		wg.Add(1)
+		// NOTE: if the average number of api call exceeds 5 per second, use another goroutine to add sleep
 		go func(pcode int) {
 			defer wg.Done()
 
